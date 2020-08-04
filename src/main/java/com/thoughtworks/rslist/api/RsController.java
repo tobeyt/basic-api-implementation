@@ -42,4 +42,16 @@ public class RsController {
     public void addOneRsEvent(@RequestBody RsEvent rsEvent) {
         rsList.add(rsEvent);
     }
+
+    @PutMapping("/rs/event")
+    public void updateOneRsEvent(@RequestParam(required = true) Integer number,
+                                 @RequestBody RsEvent rsEvent) {
+        if (rsEvent.getEventName() == null) {
+            rsList.set(number - 1, new RsEvent(rsList.get(number - 1).getEventName(), rsEvent.getKeyWord()));
+        } else if (rsEvent.getKeyWord() == null) {
+            rsList.set(number - 1, new RsEvent(rsEvent.getEventName(), rsList.get(number - 1).getKeyWord()));
+        } else {
+            rsList.set(number - 1, rsEvent);
+        }
+    }
 }
