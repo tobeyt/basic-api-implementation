@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.is;
@@ -102,4 +101,48 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldUpdateEventAndGetUpdatedEventHaveEventNameAndKeyword() throws Exception {
+
+        RsEvent newRsEvent = new RsEvent("the second new event", "new second");
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("the second new event")))
+                .andExpect(jsonPath("$.keyWord", is("new second")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldUpdateEventAndGetUpdatedEventHaveEventNameAndNotHaveKeyword() throws Exception {
+
+        RsEvent newRsEvent = new RsEvent("the second new event", null);
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("the second new event")))
+                .andExpect(jsonPath("$.keyWord", is("second")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldUpdateEventAndGetUpdatedEventNotHaveEventNameAndHaveKeyword() throws Exception {
+
+        RsEvent newRsEvent = new RsEvent(null, "new second");
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("the second event")))
+                .andExpect(jsonPath("$.keyWord", is("new second")))
+                .andExpect(status().isOk());
+    }
 }
