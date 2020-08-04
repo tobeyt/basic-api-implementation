@@ -145,4 +145,16 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.keyWord", is("new second")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldDeleteEventAndGetListNotHaveDeletedEvent() throws Exception{
+        mockMvc.perform(delete("/rs/event?number=2"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("the first event")))
+                .andExpect(jsonPath("$[0].keyWord", is("first")))
+                .andExpect(jsonPath("$[1].eventName", is("the third event")))
+                .andExpect(jsonPath("$[1].keyWord", is("third")))
+                .andExpect(status().isOk());
+    }
 }
