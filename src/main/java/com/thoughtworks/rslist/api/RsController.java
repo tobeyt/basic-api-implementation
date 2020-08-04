@@ -59,4 +59,10 @@ public class RsController {
     public void deleteOneRsEvent(@PathVariable int index) {
         rsList.remove(index - 1);
     }
+
+    @PostMapping("/rs")
+    public void insertOneEvent(@RequestParam Integer index,
+                               @RequestBody RsEvent rsEvent) {
+        rsList.add(index - 1, rsEvent);
+    }
 }

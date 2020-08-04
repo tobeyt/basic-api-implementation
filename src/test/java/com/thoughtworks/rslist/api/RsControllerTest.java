@@ -114,6 +114,12 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.eventName", is("the second new event")))
                 .andExpect(jsonPath("$.keyWord", is("new second")))
                 .andExpect(status().isOk());
+
+        RsEvent newRsEvent2 = new RsEvent("the second event", "second");
+        String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -128,6 +134,12 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs/2"))
                 .andExpect(jsonPath("$.eventName", is("the second new event")))
                 .andExpect(jsonPath("$.keyWord", is("second")))
+                .andExpect(status().isOk());
+
+        RsEvent newRsEvent2 = new RsEvent("the second event", null);
+        String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
@@ -144,6 +156,13 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$.eventName", is("the second event")))
                 .andExpect(jsonPath("$.keyWord", is("new second")))
                 .andExpect(status().isOk());
+
+        RsEvent newRsEvent2 = new RsEvent(null, "second");
+        String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
+
+        mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
     }
 
     @Test
@@ -155,6 +174,12 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[0].keyWord", is("first")))
                 .andExpect(jsonPath("$[1].eventName", is("the third event")))
                 .andExpect(jsonPath("$[1].keyWord", is("third")))
+                .andExpect(status().isOk());
+
+        RsEvent newRsEvent = new RsEvent("the second event", "second");
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(post("/rs?index=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }
