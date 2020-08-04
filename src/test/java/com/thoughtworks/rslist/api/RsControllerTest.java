@@ -1,12 +1,15 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.is;
@@ -40,30 +43,30 @@ public class RsControllerTest {
     @Test
     void shouldGetRsEventListBetween() throws Exception {
         mockMvc.perform(get("/rs?start=2&end=3"))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
+                .andExpect(jsonPath("$[0].eventName", is("the second event")))
+                .andExpect(jsonPath("$[0].keyWord", is("second")))
+                .andExpect(jsonPath("$[1].eventName", is("the third event")))
+                .andExpect(jsonPath("$[1].keyWord", is("third")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldGetRsEventListBetweenHaveStartNotHaveEnd() throws Exception {
         mockMvc.perform(get("/rs?start=2"))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
+                .andExpect(jsonPath("$[0].eventName", is("the second event")))
+                .andExpect(jsonPath("$[0].keyWord", is("second")))
+                .andExpect(jsonPath("$[1].eventName", is("the third event")))
+                .andExpect(jsonPath("$[1].keyWord", is("third")))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldGetRsEventListBetweenNotHaveStartHaveEnd() throws Exception {
         mockMvc.perform(get("/rs?end=2"))
+                .andExpect(jsonPath("$[0].eventName", is("the first event")))
+                .andExpect(jsonPath("$[0].keyWord", is("first")))
                 .andExpect(jsonPath("$[1].eventName", is("the second event")))
                 .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
                 .andExpect(status().isOk());
     }
 
@@ -76,6 +79,26 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("second")))
                 .andExpect(jsonPath("$[2].eventName", is("the third event")))
                 .andExpect(jsonPath("$[2].keyWord", is("third")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetFourEventsWhenAddOneEvent() throws Exception {
+        RsEvent newRsEvent = new RsEvent("the forth event", "forth");
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("the first event")))
+                .andExpect(jsonPath("$[0].keyWord", is("first")))
+                .andExpect(jsonPath("$[1].eventName", is("the second event")))
+                .andExpect(jsonPath("$[1].keyWord", is("second")))
+                .andExpect(jsonPath("$[2].eventName", is("the third event")))
+                .andExpect(jsonPath("$[2].keyWord", is("third")))
+                .andExpect(jsonPath("$[3].eventName", is("the forth event")))
+                .andExpect(jsonPath("$[3].keyWord", is("forth")))
                 .andExpect(status().isOk());
     }
 
