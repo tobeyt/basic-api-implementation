@@ -5,13 +5,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class RsController {
-    private List<String> rsList = Arrays.asList("第一条事件", "第二条事件", "第三条事件");
+    private List<RsEvent> rsList = Stream.of(
+            new RsEvent("the first event", "first"),
+            new RsEvent("the second event", "second"),
+            new RsEvent("the third event", "third")).collect(Collectors.toList());
 
     @GetMapping("/rs/list")
-    public String getRsList() {
-        return rsList.toString();
+    public List<RsEvent> getRsList() {
+        return rsList;
     }
 }
