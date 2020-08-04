@@ -7,8 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -17,9 +18,14 @@ public class RsControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void shouldGetRsList() throws Exception {
+    void shouldGetAllRsList() throws Exception {
         mockMvc.perform(get("/rs/list"))
-                .andExpect(content().string("[第一条事件, 第二条事件, 第三条事件]"))
+                .andExpect(jsonPath("$[0].eventName", is("the first event")))
+                .andExpect(jsonPath("$[0].keyWord", is("first")))
+                .andExpect(jsonPath("$[1].eventName", is("the second event")))
+                .andExpect(jsonPath("$[1].keyWord", is("second")))
+                .andExpect(jsonPath("$[2].eventName", is("the third event")))
+                .andExpect(jsonPath("$[2].keyWord", is("third")))
                 .andExpect(status().isOk());
     }
 }
