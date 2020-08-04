@@ -148,7 +148,7 @@ public class RsControllerTest {
 
     @Test
     void shouldDeleteEventAndGetListNotHaveDeletedEvent() throws Exception{
-        mockMvc.perform(delete("/rs/event?number=2"))
+        mockMvc.perform(delete("/rs/2"))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("the first event")))
