@@ -28,4 +28,12 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[2].keyWord", is("third")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldGetOneRsEvent() throws Exception {
+        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("the second event")))
+                .andExpect(jsonPath("$.keyWord", is("second")))
+                .andExpect(status().isOk());
+    }
 }
