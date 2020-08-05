@@ -1,4 +1,4 @@
-package com.thoughtworks.rslist.api;
+package com.thoughtworks.rslist.domain;
 
 public class RsEvent {
     private String eventName;
