@@ -6,6 +6,7 @@ import com.thoughtworks.rslist.exception.InValidIndexException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -102,10 +103,5 @@ public class RsController {
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
-    @ExceptionHandler(InValidIndexException.class)
-    public ResponseEntity exceptionHandler(InValidIndexException ex) {
-        CommentError commentError = new CommentError();
-        commentError.setError(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commentError);
-    }
+
 }
