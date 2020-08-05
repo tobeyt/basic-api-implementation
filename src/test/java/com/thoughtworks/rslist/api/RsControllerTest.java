@@ -226,7 +226,16 @@ public class RsControllerTest {
     @Test
     void keyWordShouldNotNull() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-        RsEvent rsEvent = new RsEvent(null, null, user);
+        RsEvent rsEvent = new RsEvent("添加一条热搜", null, user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rsEventJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void userShouldNotNull() throws Exception {
+        RsEvent rsEvent = new RsEvent("添加一条热搜", "娱乐", null);
         ObjectMapper objectMapper = new ObjectMapper();
         String rsEventJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
