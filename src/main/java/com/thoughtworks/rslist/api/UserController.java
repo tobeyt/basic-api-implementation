@@ -1,12 +1,11 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.CommentError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -26,5 +25,12 @@ public class UserController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex){
+        CommentError commentError = new CommentError();
+        commentError.setError("invalid user");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commentError);
     }
 }

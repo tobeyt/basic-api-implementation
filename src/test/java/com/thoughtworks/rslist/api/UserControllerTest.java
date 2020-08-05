@@ -45,7 +45,7 @@ class UserControllerTest {
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", is("invalid param")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -106,5 +106,13 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].user_email", is("bitsqiu@gmail.com")))
                 .andExpect(jsonPath("$[0].user_phone", is("13886585124")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturnExceptionWhenRegisterWithInvalidUser() throws Exception {
+        String requestJson = "{\"userName\":\"qindi\",\"age\":12,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}";
+        mockMvc.perform(post("/user").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 }
