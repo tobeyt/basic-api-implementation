@@ -27,18 +27,18 @@ public class RsController {
     }
 
     @GetMapping("/rs")
-    public List<RsEvent> getRsEventBetween(@RequestParam(required = false) Integer start,
-                                           @RequestParam(required = false) Integer end) {
+    public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
+                                                           @RequestParam(required = false) Integer end) {
         if (start == null && end == null) {
-            return rsList;
+            return ResponseEntity.ok(rsList);
         }
         if (end == null) {
-            return rsList.subList(start - 1, rsList.size());
+            return ResponseEntity.ok(rsList.subList(start - 1, rsList.size()));
         }
         if (start == null) {
-            return rsList.subList(0, end);
+            return ResponseEntity.ok(rsList.subList(0, end));
         }
-        return rsList.subList(start - 1, end);
+        return ResponseEntity.ok(rsList.subList(start - 1, end));
     }
 
     @PostMapping("/rs/event")

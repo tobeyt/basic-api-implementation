@@ -260,22 +260,19 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
     }
 
-    //    @Test
+    @Test
     void getRsListReturnWithoutUserFields() throws Exception {
-        User user = new User("qindi", 22, "male", "bitsqiu@gmail.com", "13886585124");
-        RsEvent rsEvent = new RsEvent("第四条事件", "无分类", user);
-        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+        String requestJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
-                .andExpect(jsonPath("$[0].eventName", is("the first event")))
-                .andExpect(jsonPath("$[0].keyWord", is("first")))
-                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
-                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
+                .andExpect(jsonPath("$[3].eventName", is("第四条事件")))
+                .andExpect(jsonPath("$[3].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[3]", not(hasKey("user"))))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(delete("/rs/4"))
                 .andExpect(status().isOk());
     }
 }
