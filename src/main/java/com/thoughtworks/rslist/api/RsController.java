@@ -56,12 +56,14 @@ public class RsController {
             UserController.users.add(rsEvent.getUser());
         }
         rsList.add(rsEvent);
-        return ResponseEntity.created(null).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("index", String.valueOf(rsList.size() - 1));
+        return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
     @PutMapping("/rs/event")
     public ResponseEntity updateOneRsEvent(@RequestParam(required = true) Integer number,
-                                 @RequestBody RsEvent rsEvent) {
+                                           @RequestBody RsEvent rsEvent) {
         if (rsEvent.getEventName() == null) {
             rsList.set(number - 1, new RsEvent(rsList.get(number - 1).getEventName(), rsEvent.getKeyWord()));
         } else if (rsEvent.getKeyWord() == null) {
@@ -70,7 +72,7 @@ public class RsController {
             rsList.set(number - 1, rsEvent);
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.add("index", String.valueOf(number));
+        headers.add("index", String.valueOf(number - 1));
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
@@ -79,7 +81,7 @@ public class RsController {
         rsList.remove(index - 1);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("index", String.valueOf(index));
+        headers.add("index", String.valueOf(index - 1));
 
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
@@ -90,7 +92,7 @@ public class RsController {
         rsList.add(index - 1, rsEvent);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("index", String.valueOf(index));
+        headers.add("index", String.valueOf(index - 1));
 
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
 
