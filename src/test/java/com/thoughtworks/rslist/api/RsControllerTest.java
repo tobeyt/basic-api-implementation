@@ -181,6 +181,9 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertEquals(4, RsController.rsList.size());
+
+        mockMvc.perform(delete("/rs/4"))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -194,6 +197,9 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
         assertEquals(1, UserController.users.size());
         assertEquals(4, RsController.rsList.size());
+
+        mockMvc.perform(delete("/rs/4"))
+                .andExpect(status().isOk());
     }
 
     @Test
