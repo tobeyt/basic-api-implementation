@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -83,26 +85,6 @@ public class RsControllerTest {
                 .andExpect(jsonPath("$[1].keyWord", is("second")))
                 .andExpect(jsonPath("$[2].eventName", is("the third event")))
                 .andExpect(jsonPath("$[2].keyWord", is("third")))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldGetFourEventsWhenAddOneEvent() throws Exception {
-        RsEvent newRsEvent = new RsEvent("the forth event", "forth");
-        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
-
-        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(jsonPath("$[0].eventName", is("the first event")))
-                .andExpect(jsonPath("$[0].keyWord", is("first")))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
-                .andExpect(jsonPath("$[3].eventName", is("the forth event")))
-                .andExpect(jsonPath("$[3].keyWord", is("forth")))
                 .andExpect(status().isOk());
     }
 
@@ -211,6 +193,7 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertEquals(1, UserController.users.size());
+        assertEquals(4, RsController.rsList.size());
     }
 
     @Test

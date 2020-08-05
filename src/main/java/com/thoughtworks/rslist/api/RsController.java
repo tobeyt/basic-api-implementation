@@ -49,6 +49,7 @@ public class RsController {
             }
         }
         UserController.users.add(rsEvent.getUser());
+        rsList.add(rsEvent);
     }
 
     @PutMapping("/rs/event")
