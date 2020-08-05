@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -160,7 +159,7 @@ public class RsControllerTest {
     @Test
     void shouldDeleteEventAndGetListNotHaveDeletedEvent() throws Exception {
         mockMvc.perform(delete("/rs/2"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("the first event")))
                 .andExpect(jsonPath("$[0].keyWord", is("first")))

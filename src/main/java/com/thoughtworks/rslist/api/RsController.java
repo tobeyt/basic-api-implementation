@@ -1,6 +1,8 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,8 +72,12 @@ public class RsController {
     }
 
     @DeleteMapping("/rs/{index}")
-    public void deleteOneRsEvent(@PathVariable int index) {
+    public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("index", String.valueOf(index));
+
         rsList.remove(index - 1);
+        return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
     @PostMapping("/rs")
