@@ -41,7 +41,13 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public void addOneRsEvent(@RequestBody RsEvent rsEvent) {
-        rsList.add(rsEvent);
+        for (int i = 0; i < UserController.users.size(); i++) {
+            if (rsEvent.getUser().getUserName().equals(UserController.users.get(i).getUserName())) {
+                rsList.add(rsEvent);
+                return;
+            }
+        }
+        UserController.users.add(rsEvent.getUser());
     }
 
     @PutMapping("/rs/event")
