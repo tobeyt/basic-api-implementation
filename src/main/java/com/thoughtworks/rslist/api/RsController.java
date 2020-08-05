@@ -60,7 +60,7 @@ public class RsController {
     }
 
     @PutMapping("/rs/event")
-    public void updateOneRsEvent(@RequestParam(required = true) Integer number,
+    public ResponseEntity updateOneRsEvent(@RequestParam(required = true) Integer number,
                                  @RequestBody RsEvent rsEvent) {
         if (rsEvent.getEventName() == null) {
             rsList.set(number - 1, new RsEvent(rsList.get(number - 1).getEventName(), rsEvent.getKeyWord()));
@@ -69,6 +69,9 @@ public class RsController {
         } else {
             rsList.set(number - 1, rsEvent);
         }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("index", String.valueOf(number));
+        return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/rs/{index}")

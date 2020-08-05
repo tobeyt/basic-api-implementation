@@ -99,7 +99,7 @@ public class RsControllerTest {
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/2"))
                 .andExpect(jsonPath("$.eventName", is("the second new event")))
@@ -110,7 +110,7 @@ public class RsControllerTest {
         String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class RsControllerTest {
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/2"))
                 .andExpect(jsonPath("$.eventName", is("the second new event")))
@@ -131,7 +131,7 @@ public class RsControllerTest {
         String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class RsControllerTest {
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/2"))
                 .andExpect(jsonPath("$.eventName", is("the second event")))
@@ -152,7 +152,7 @@ public class RsControllerTest {
         String requestJson2 = new ObjectMapper().writeValueAsString(newRsEvent2);
 
         mockMvc.perform(put("/rs/event?number=2").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
     }
 
