@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,13 +17,13 @@ public class RsController {
             new RsEvent("the third event", "third")).collect(Collectors.toList());
 
     @GetMapping("/rs/list")
-    public List<RsEvent> getRsList() {
-        return rsList;
+    public ResponseEntity<List<RsEvent>> getRsList() {
+        return ResponseEntity.ok(rsList);
     }
 
     @GetMapping("/rs/{index}")
-    public RsEvent getOneRsEvent(@PathVariable int index) {
-        return rsList.get(index - 1);
+    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
+        return ResponseEntity.ok(rsList.get(index - 1));
     }
 
     @GetMapping("/rs")
@@ -41,15 +42,19 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public void addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+        boolean existUser = false;
         for (int i = 0; i < UserController.users.size(); i++) {
             if (rsEvent.getUser().getUserName().equals(UserController.users.get(i).getUserName())) {
-                rsList.add(rsEvent);
-                return;
+                existUser = true;
+                break;
             }
         }
-        UserController.users.add(rsEvent.getUser());
+        if (!existUser) {
+            UserController.users.add(rsEvent.getUser());
+        }
         rsList.add(rsEvent);
+        return ResponseEntity.created(null).build();
     }
 
     @PutMapping("/rs/event")

@@ -14,17 +14,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class RsControllerTest {
     @Autowired
     MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        UserController.users.clear();
+    }
 
     @Test
     void shouldGetAllRsList() throws Exception {
@@ -171,7 +176,7 @@ public class RsControllerTest {
     }
 
     @Test
-    void addRsEventWithUserName() throws Exception {
+    void addRsEventWithUser() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         UserController.users.add(user);
 
@@ -179,22 +184,23 @@ public class RsControllerTest {
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         assertEquals(4, RsController.rsList.size());
+        assertEquals(1, UserController.users.size());
 
         mockMvc.perform(delete("/rs/4"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void addRsEventWithoutUserName() throws Exception {
+    void addRsEventWithoutUserInList() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
 
         RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         assertEquals(1, UserController.users.size());
         assertEquals(4, RsController.rsList.size());
 
@@ -239,5 +245,37 @@ public class RsControllerTest {
         String rsEventJson = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldAddOneRsEvent() throws Exception {
+        User user = new User("qindi", 22, "male", "bitsqiu@gmail.com", "13886585124");
+        RsEvent rsEvent = new RsEvent("第四条事件", "无分类", user);
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(delete("/rs/4"))
+                .andExpect(status().isOk());
+    }
+
+    //    @Test
+    void getRsListReturnWithoutUserFields() throws Exception {
+        User user = new User("qindi", 22, "male", "bitsqiu@gmail.com", "13886585124");
+        RsEvent rsEvent = new RsEvent("第四条事件", "无分类", user);
+        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("the first event")))
+                .andExpect(jsonPath("$[0].keyWord", is("first")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
+                .andExpect(jsonPath("$[1].eventName", is("the second event")))
+                .andExpect(jsonPath("$[1].keyWord", is("second")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
+                .andExpect(jsonPath("$[2].eventName", is("the third event")))
+                .andExpect(jsonPath("$[2].keyWord", is("third")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
+                .andExpect(status().isOk());
     }
 }
