@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -167,7 +170,7 @@ public class RsControllerTest {
     }
 
     @Test
-    void shouldDeleteEventAndGetListNotHaveDeletedEvent() throws Exception{
+    void shouldDeleteEventAndGetListNotHaveDeletedEvent() throws Exception {
         mockMvc.perform(delete("/rs/2"))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list"))
@@ -182,5 +185,16 @@ public class RsControllerTest {
 
         mockMvc.perform(post("/rs?index=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void addRsEventWithUser() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(4, RsController.rsList.size());
     }
 }

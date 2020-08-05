@@ -1,8 +1,12 @@
 package com.thoughtworks.rslist.domain;
 
+import lombok.Data;
+
+@Data
 public class RsEvent {
     private String eventName;
     private String keyWord;
+    private User user;
 
     public RsEvent() {
     }
@@ -10,6 +14,12 @@ public class RsEvent {
     public RsEvent(String eventName, String keyWord) {
         this.eventName = eventName;
         this.keyWord = keyWord;
+    }
+
+    public RsEvent(String eventName, String keyWord, User user) {
+        this.eventName = eventName;
+        this.keyWord = keyWord;
+        this.user = user;
     }
 
     public String getEventName() {

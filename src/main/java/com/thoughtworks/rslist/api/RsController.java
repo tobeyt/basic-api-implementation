@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 @RestController
 public class RsController {
-    private List<RsEvent> rsList = Stream.of(
+    public static List<RsEvent> rsList = Stream.of(
             new RsEvent("the first event", "first"),
             new RsEvent("the second event", "second"),
             new RsEvent("the third event", "third")).collect(Collectors.toList());

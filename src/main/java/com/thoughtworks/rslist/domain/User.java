@@ -7,6 +7,7 @@ import javax.validation.constraints.*;
 @Data
 public class User {
     @NotNull
+    @Size(max = 8)
     private String userName;
     @Min(18)
     @Max(100)
