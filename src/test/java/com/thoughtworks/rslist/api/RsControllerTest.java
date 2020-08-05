@@ -265,4 +265,11 @@ public class RsControllerTest {
         mockMvc.perform(delete("/rs/4"))
                 .andExpect(status().isCreated());
     }
+
+    @Test
+    void shouldReturnBadRequestWhenIndexOutOfBound() throws Exception {
+        mockMvc.perform(get("/rs/10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid index")));
+    }
 }

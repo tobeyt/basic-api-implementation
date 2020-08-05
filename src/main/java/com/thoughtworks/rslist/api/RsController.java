@@ -1,6 +1,8 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.exception.CommentError;
+import com.thoughtworks.rslist.exception.InValidIndexException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,10 @@ public class RsController {
     }
 
     @GetMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
+    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) throws InValidIndexException {
+        if (index > rsList.size()) {
+            throw new InValidIndexException("invalid index");
+        }
         return ResponseEntity.ok(rsList.get(index - 1));
     }
 
@@ -95,6 +100,12 @@ public class RsController {
         headers.add("index", String.valueOf(index - 1));
 
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
+    }
 
+    @ExceptionHandler(InValidIndexException.class)
+    public ResponseEntity exceptionHandler(InValidIndexException ex) {
+        CommentError commentError = new CommentError();
+        commentError.setError(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(commentError);
     }
 }
