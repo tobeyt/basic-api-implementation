@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
@@ -210,5 +211,25 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertEquals(1, UserController.users.size());
+    }
+
+    @Test
+    void eventNameShouldNotNull() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        RsEvent rsEvent = new RsEvent(null, "娱乐", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rsEventJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void keyWordShouldNotNull() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        RsEvent rsEvent = new RsEvent(null, null, user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String rsEventJson = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rs/event").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

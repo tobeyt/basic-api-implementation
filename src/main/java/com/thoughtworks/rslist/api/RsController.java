@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +41,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public void addOneRsEvent(@RequestBody RsEvent rsEvent) {
+    public void addOneRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         for (int i = 0; i < UserController.users.size(); i++) {
             if (rsEvent.getUser().getUserName().equals(UserController.users.get(i).getUserName())) {
                 rsList.add(rsEvent);
