@@ -61,38 +61,6 @@ public class RsControllerTest {
     }
 
     @Test
-    void shouldGetRsEventListBetweenHaveStartNotHaveEnd() throws Exception {
-        mockMvc.perform(get("/rs?start=2"))
-                .andExpect(jsonPath("$[0].eventName", is("the second event")))
-                .andExpect(jsonPath("$[0].keyWord", is("second")))
-                .andExpect(jsonPath("$[1].eventName", is("the third event")))
-                .andExpect(jsonPath("$[1].keyWord", is("third")))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldGetRsEventListBetweenNotHaveStartHaveEnd() throws Exception {
-        mockMvc.perform(get("/rs?end=2"))
-                .andExpect(jsonPath("$[0].eventName", is("the first event")))
-                .andExpect(jsonPath("$[0].keyWord", is("first")))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void shouldGetRsEventListBetweenNotHaveStartNotHaveEnd() throws Exception {
-        mockMvc.perform(get("/rs"))
-                .andExpect(jsonPath("$[0].eventName", is("the first event")))
-                .andExpect(jsonPath("$[0].keyWord", is("first")))
-                .andExpect(jsonPath("$[1].eventName", is("the second event")))
-                .andExpect(jsonPath("$[1].keyWord", is("second")))
-                .andExpect(jsonPath("$[2].eventName", is("the third event")))
-                .andExpect(jsonPath("$[2].keyWord", is("third")))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void shouldUpdateEventAndGetUpdatedEventHaveEventNameAndKeyword() throws Exception {
 
         RsEvent newRsEvent = new RsEvent("the second new event", "new second");
@@ -279,5 +247,13 @@ public class RsControllerTest {
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid param")));
+    }
+
+    @Test
+    void shouldReturnExcepthonWhenNotBetween() throws Exception{
+        mockMvc.perform(get("/rs?start=-1&end=100"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid request param")));
+
     }
 }

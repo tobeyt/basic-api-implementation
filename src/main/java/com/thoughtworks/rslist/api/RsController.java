@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.InValidIndexException;
+import com.thoughtworks.rslist.exception.InvalidStartAndEnd;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +37,12 @@ public class RsController {
 
     @GetMapping("/rs")
     public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
-                                                           @RequestParam(required = false) Integer end) {
-        if (start == null && end == null) {
+                                                           @RequestParam(required = false) Integer end) throws InvalidStartAndEnd {
+        if (start == null || end == null) {
             return ResponseEntity.ok(rsList);
         }
-        if (end == null) {
-            return ResponseEntity.ok(rsList.subList(start - 1, rsList.size()));
-        }
-        if (start == null) {
-            return ResponseEntity.ok(rsList.subList(0, end));
+        if(start > end || start<1 || start>rsList.size() || end<1 || end>rsList.size()){
+            throw new InvalidStartAndEnd("invalid request param");
         }
         return ResponseEntity.ok(rsList.subList(start - 1, end));
     }
@@ -102,6 +100,4 @@ public class RsController {
 
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
-
-
 }
