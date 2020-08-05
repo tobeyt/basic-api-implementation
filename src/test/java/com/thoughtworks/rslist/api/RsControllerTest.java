@@ -188,13 +188,27 @@ public class RsControllerTest {
     }
 
     @Test
-    void addRsEventWithUser() throws Exception {
+    void addRsEventWithUserName() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        UserController.users.add(user);
+
         RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         assertEquals(4, RsController.rsList.size());
+    }
+
+    @Test
+    void addRsEventWithoutUserName() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+
+        RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
+        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        assertEquals(1, UserController.users.size());
     }
 }

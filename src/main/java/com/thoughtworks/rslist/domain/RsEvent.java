@@ -37,4 +37,12 @@ public class RsEvent {
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
