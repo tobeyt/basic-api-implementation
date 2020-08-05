@@ -171,16 +171,12 @@ public class RsControllerTest {
         String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
 
         mockMvc.perform(post("/rs?index=2").content(requestJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void addRsEventWithUser() throws Exception {
-        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-        UserController.users.add(user);
-
-        RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
-        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+        String requestJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -188,15 +184,12 @@ public class RsControllerTest {
         assertEquals(1, UserController.users.size());
 
         mockMvc.perform(delete("/rs/4"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void addRsEventWithoutUserInList() throws Exception {
-        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-
-        RsEvent newRsEvent = new RsEvent("添加一条热搜", "娱乐", user);
-        String requestJson = new ObjectMapper().writeValueAsString(newRsEvent);
+        String requestJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -204,7 +197,7 @@ public class RsControllerTest {
         assertEquals(4, RsController.rsList.size());
 
         mockMvc.perform(delete("/rs/4"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -248,15 +241,13 @@ public class RsControllerTest {
 
     @Test
     void shouldAddOneRsEvent() throws Exception {
-        User user = new User("qindi", 22, "male", "bitsqiu@gmail.com", "13886585124");
-        RsEvent rsEvent = new RsEvent("第四条事件", "无分类", user);
-        String requestJson = new ObjectMapper().writeValueAsString(rsEvent);
+        String requestJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
 
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(delete("/rs/4"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -272,6 +263,6 @@ public class RsControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(delete("/rs/4"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

@@ -73,16 +73,23 @@ public class RsController {
 
     @DeleteMapping("/rs/{index}")
     public ResponseEntity deleteOneRsEvent(@PathVariable int index) {
+        rsList.remove(index - 1);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("index", String.valueOf(index));
 
-        rsList.remove(index - 1);
         return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 
     @PostMapping("/rs")
-    public void insertOneEvent(@RequestParam Integer index,
-                               @RequestBody RsEvent rsEvent) {
+    public ResponseEntity insertOneEvent(@RequestParam Integer index,
+                                         @RequestBody RsEvent rsEvent) {
         rsList.add(index - 1, rsEvent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("index", String.valueOf(index));
+
+        return new ResponseEntity(null, headers, HttpStatus.CREATED);
+
     }
 }
