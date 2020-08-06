@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRespository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ class UserControllerTest {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRespository rsEventRespository;
+
     @BeforeEach
     void setUp() {
         UserController.users.clear();
@@ -122,11 +126,24 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldDeleteUser() throws Exception{
+    void shouldDeleteUser() throws Exception {
         String userJson = "{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}";
         mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-        mockMvc.perform(delete("/user/123"))
+        assertEquals(1, userRepository.findAll().size());
+
+        String requestJson = "{\"eventName\":\"事件1\",\"keyWord\":\"无分类\",\"userId\":1}";
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+        assertEquals(1, rsEventRespository.findAll().size());
+        String requestJson1 = "{\"eventName\":\"事件2\",\"keyWord\":\"无分类\",\"userId\":1}";
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        assertEquals(2, rsEventRespository.findAll().size());
+
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().isCreated());
+        assertEquals(0, userRepository.findAll().size());
+        assertEquals(0, rsEventRespository.findAll().size());
     }
 }

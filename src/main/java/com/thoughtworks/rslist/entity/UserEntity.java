@@ -26,6 +26,6 @@ public class UserEntity {
     private String phone;
     private int vote;
 
-    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "userId")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "userId")
     private List<RsEventEntity> events;
 }
