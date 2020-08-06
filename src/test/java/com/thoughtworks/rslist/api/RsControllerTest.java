@@ -254,5 +254,6 @@ public class RsControllerTest {
         mockMvc.perform(get("/rs?start=-1&end=100"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid request param")));
+
     }
 }
