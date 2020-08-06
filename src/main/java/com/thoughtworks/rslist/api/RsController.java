@@ -28,8 +28,6 @@ public class RsController {
     @Autowired
     UserRepository userRepository;
 
-    public static List<RsEvent> rsList;
-
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEventEntity>> getRsList() {
         List<RsEventEntity> allEvents = rsEventRespository.findAll();
@@ -96,16 +94,5 @@ public class RsController {
     public ResponseEntity deleteOneRsEvent(@PathVariable int rsEventId) {
         rsEventRespository.deleteById(rsEventId);
         return new ResponseEntity(null, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/rs")
-    public ResponseEntity insertOneEvent(@RequestParam Integer index,
-                                         @RequestBody RsEvent rsEvent) {
-        rsList.add(index - 1, rsEvent);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("index", String.valueOf(index - 1));
-
-        return new ResponseEntity(null, headers, HttpStatus.CREATED);
     }
 }

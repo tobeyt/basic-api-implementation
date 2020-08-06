@@ -41,11 +41,10 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
-    @Transactional
     @DeleteMapping("/user/{userId}")
     public ResponseEntity deleteById(@PathVariable int userId) {
         userRepository.deleteById(userId);

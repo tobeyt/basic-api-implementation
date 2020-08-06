@@ -34,10 +34,9 @@ public class RsControllerTest {
     UserRepository userRepository;
 
     @BeforeEach
-    void setUp() {
-        UserController.users.clear();
+    void setUp(){
+        userRepository.deleteAll();
     }
-
     @Test
     void shouldGetAllRsEvents() throws Exception {
         String userJson = "{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}";
@@ -110,7 +109,6 @@ public class RsControllerTest {
         String requestJson2 = "{\"eventName\":\"事件\",\"keyWord\":\"无分类\",\"userId\":111}";
         mockMvc.perform(post("/rs/event").content(requestJson2).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-
     }
 
     @Test
@@ -172,7 +170,7 @@ public class RsControllerTest {
 
     @Test
     void shouldReturnExceptionWhenAddOneRsEventInvalidUser() throws Exception {
-        String requestJson = "{\"eventName\":\"第四条事件\",\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":12,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
+        String requestJson = "{\"keyWord\":\"无分类\",\"user\":{\"userName\":\"qindi\",\"age\":12,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}}";
         mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid param")));
