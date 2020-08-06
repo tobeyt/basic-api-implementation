@@ -17,10 +17,5 @@ class RsListApplicationTests {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    void shouldAddUser() throws Exception {
-        String userJson = "{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}";
-        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-    }
+
 }
