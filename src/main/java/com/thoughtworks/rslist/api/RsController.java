@@ -16,10 +16,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 public class RsController {
@@ -31,28 +31,31 @@ public class RsController {
     public static List<RsEvent> rsList;
 
     @GetMapping("/rs/list")
-    public ResponseEntity<List<RsEvent>> getRsList() {
-        return ResponseEntity.ok(rsList);
+    public ResponseEntity<List<RsEventEntity>> getRsList() {
+        List<RsEventEntity> allEvents = rsEventRespository.findAll();
+        return ResponseEntity.ok(allEvents);
     }
 
     @GetMapping("/rs/{index}")
-    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) throws InValidIndexException {
-        if (index > rsList.size()) {
+    public ResponseEntity<RsEventEntity> getRsEventByIndex(@PathVariable int index) throws InValidIndexException {
+        if (index > rsEventRespository.findAll().size()) {
             throw new InValidIndexException("invalid index");
         }
-        return ResponseEntity.ok(rsList.get(index - 1));
+        RsEventEntity result = rsEventRespository.findById(index).get();
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/rs")
-    public ResponseEntity<List<RsEvent>> getRsEventBetween(@RequestParam(required = false) Integer start,
-                                                           @RequestParam(required = false) Integer end) throws InvalidStartAndEnd {
+    public ResponseEntity<List<RsEventEntity>> getRsEventBetween(@RequestParam(required = false) Integer start,
+                                                                 @RequestParam(required = false) Integer end) throws InvalidStartAndEnd {
+        List<RsEventEntity> allEvents = rsEventRespository.findAll();
         if (start == null || end == null) {
-            return ResponseEntity.ok(rsList);
+            return ResponseEntity.ok(allEvents);
         }
-        if (start > end || start < 1 || start > rsList.size() || end < 1 || end > rsList.size()) {
+        if (start > end || start < 1 || start > allEvents.size() || end < 1 || end > allEvents.size()) {
             throw new InvalidStartAndEnd("invalid request param");
         }
-        return ResponseEntity.ok(rsList.subList(start - 1, end));
+        return ResponseEntity.ok(allEvents.subList(start, end + 1));
     }
 
     @PostMapping("/rs/event")
@@ -70,10 +73,22 @@ public class RsController {
         return ResponseEntity.created(null).build();
     }
 
-    @PutMapping("/rs/event")
-    public ResponseEntity updateOneRsEvent(@RequestParam(required = true) Integer number,
+    @PutMapping("/rs/{rsEventId}")
+    public ResponseEntity updateOneRsEvent(@PathVariable int rsEventId,
                                            @RequestBody RsEvent rsEvent) {
-
+        @NotNull int userId = rsEvent.getUserId();
+        RsEventEntity rsEventEntity = rsEventRespository.findById(rsEventId).get();
+        int id = rsEventEntity.getUserId();
+        if (id!=userId) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (rsEvent.getEventName() != null) {
+            rsEventEntity.setEventName(rsEvent.getEventName());
+        }
+        if (rsEvent.getKeyWord() != null) {
+            rsEventEntity.setKeyword(rsEvent.getKeyWord());
+        }
+        rsEventRespository.save(rsEventEntity);
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 
