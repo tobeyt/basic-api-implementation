@@ -147,6 +147,23 @@ public class RsControllerTest {
     }
 
     @Test
+    void shouldDeleteRsEvent() throws Exception {
+        String userJson = "{\"userName\":\"qindi\",\"age\":22,\"gender\":\"male\",\"email\":\"bitsqiu@gmail.com\",\"phone\":\"13886585124\"}";
+        mockMvc.perform(post("/user").content(userJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        assertEquals(1, userRepository.findAll().size());
+        String requestJson = "{\"eventName\":\"事件\",\"keyWord\":\"无分类\",\"userId\":1}";
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        mockMvc.perform(post("/rs/event").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(delete("/rs/1"))
+                .andExpect(status().isCreated());
+        assertEquals(1, rsEventRespository.findAll().size());
+    }
+
+    @Test
     void shouldReturnBadRequestWhenIndexOutOfBound() throws Exception {
         mockMvc.perform(get("/rs/10"))
                 .andExpect(status().isBadRequest())
